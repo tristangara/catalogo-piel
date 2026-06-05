@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Bolsas de Piel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-100">
+    <div class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-center mb-10 text-stone-800">Catálogo de Piel</h1>
+        
+        <div id="contenedor-bolsas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        </div>
+    </div>
+
+    <script>
+        // PON TU NÚMERO AQUÍ (con el 52 y tu lada)
+        const miWhatsApp = "529512159841"; 
+
+        async function cargarBolsas() {
+            try {
+                // Le pedimos los datos a tu servidor de Node.js
+                const respuesta = await fetch('http://localhost:3000/api/productos');
+                const bolsas = await respuesta.json();
+                
+                const contenedor = document.getElementById('contenedor-bolsas');
+                
+                // Por cada bolsa que encuentre en la base de datos, va a crear una "tarjeta"
+                bolsas.forEach(bolsa => {
+                    // Preparamos el mensaje de WhatsApp con el nombre y precio exacto
+                    const mensaje = `Qué onda, me interesa la bolsa modelo ${bolsa.nombre} que cuesta $${bolsa.precio}.`;
+                    const urlWhatsApp = `https://wa.me/${miWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+
+                    // Armamos el diseño de la tarjeta
+                    const tarjeta = `
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-stone-200">
+                            <img src="${bolsa.url_imagen}" alt="${bolsa.nombre}" class="w-full h-72 object-cover">
+                            <div class="p-6">
+                                <h2 class="text-2xl font-semibold mb-2 text-stone-800">${bolsa.nombre}</h2>
+                                <p class="text-stone-600 mb-4 h-16">${bolsa.descripcion}</p>
+                                <p class="text-2xl font-bold text-stone-900 mb-6">$${bolsa.precio} MXN</p>
+                                <a href="${urlWhatsApp}" target="_blank" class="block w-full text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-md transition duration-300">
+                                    💬 Preguntar por WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    // Metemos la tarjeta en la página
+                    contenedor.innerHTML += tarjeta;
+                });
+            } catch (error) {
+                console.error("Error al cargar el catálogo:", error);
+            }
+        }
+
+        // Arrancamos la función
+        cargarBolsas();
+    </script>
+</body>
+</html>
