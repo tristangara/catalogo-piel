@@ -21,7 +21,7 @@
         async function cargarBolsas() {
             try {
                 // Le pedimos los datos a tu servidor de Node.js
-                const respuesta = await fetch('http://localhost:3000/api/productos');
+                const respuesta = await fetch('https://api-catalogo-bolsas.onrender.com/api/productos');
                 const bolsas = await respuesta.json();
                 
                 const contenedor = document.getElementById('contenedor-bolsas');
