@@ -25,11 +25,21 @@
     <div class="container mx-auto p-8">
         <h1 class="text-4xl font-bold text-center mb-10 text-stone-800">Catálogo de Piel</h1>
         <!-- SECCIÓN DEL BUSCADOR -->
-    <div class="container mx-auto px-4 mb-8 flex justify-center">
+   <div class="container mx-auto px-4 mb-8 flex justify-center">
         <input type="text" id="buscador" placeholder="Buscar por color, modelo o estilo..." class="w-full md:w-1/2 p-3 border border-stone-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-stone-600 text-stone-800 transition">
     </div>
-        <div id="contenedor-bolsas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        </div>
+
+    <div class="container mx-auto px-4 mb-8 flex flex-wrap justify-center gap-3">
+        <button class="filtro-btn bg-stone-800 text-white px-5 py-2 rounded-full font-semibold transition shadow-sm hover:shadow-md" data-categoria="todos">Todos</button>
+        <button class="filtro-btn bg-white text-stone-800 border border-stone-300 px-5 py-2 rounded-full font-semibold transition shadow-sm hover:shadow-md hover:bg-stone-50" data-categoria="crossbody">Crossbody</button>
+        <button class="filtro-btn bg-white text-stone-800 border border-stone-300 px-5 py-2 rounded-full font-semibold transition shadow-sm hover:shadow-md hover:bg-stone-50" data-categoria="mochila">Mochilas</button>
+        <button class="filtro-btn bg-white text-stone-800 border border-stone-300 px-5 py-2 rounded-full font-semibold transition shadow-sm hover:shadow-md hover:bg-stone-50" data-categoria="bandolera">Bandoleras</button>
+        <button class="filtro-btn bg-white text-stone-800 border border-stone-300 px-5 py-2 rounded-full font-semibold transition shadow-sm hover:shadow-md hover:bg-stone-50" data-categoria="tote">Totes</button>
+    </div>
+
+    <div id="contenedor-bolsas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    </div>
+       
     </div>
 
     <script>
@@ -93,7 +103,37 @@
         
         pintarCatalogo(bolsasFiltradas); // Volvemos a pintar pero solo con las que coincidan
     });
+// 4. El evento de los botones de categoría
+    const botonesFiltro = document.querySelectorAll('.filtro-btn');
+    
+    botonesFiltro.forEach(boton => {
+        boton.addEventListener('click', (evento) => {
+            const categoria = evento.target.getAttribute('data-categoria');
+            
+            // Efecto visual: Pintar oscuro el botón seleccionado y poner en blanco los demás
+            botonesFiltro.forEach(b => {
+                b.classList.remove('bg-stone-800', 'text-white');
+                b.classList.add('bg-white', 'text-stone-800', 'border', 'border-stone-300');
+            });
+            evento.target.classList.remove('bg-white', 'text-stone-800', 'border', 'border-stone-300');
+            evento.target.classList.add('bg-stone-800', 'text-white');
 
+            // Filtrar las bolsas según el botón
+            if (categoria === 'todos') {
+                pintarCatalogo(inventarioGlobal); // Muestra todas
+            } else {
+                const bolsasFiltradas = inventarioGlobal.filter(bolsa => {
+                    // Busca la palabra de la categoría en el nombre o descripción
+                    return bolsa.nombre.toLowerCase().includes(categoria) || 
+                           bolsa.descripcion.toLowerCase().includes(categoria);
+                });
+                pintarCatalogo(bolsasFiltradas);
+            }
+            
+            // Opcional: Limpiar la barra de búsqueda si usan un botón
+            document.getElementById('buscador').value = '';
+        });
+    });
     // Arrancamos el proceso
     cargarBolsas();
     </script>
